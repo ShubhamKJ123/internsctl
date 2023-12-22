@@ -1,3 +1,5 @@
+# Problem Statement:
+
  Scenario There is a customer who came to you with a problem to have a custom linux
 command for his operations. Our task is to understand the problem and create a linux
 command via bash script as per the instructions.
@@ -16,6 +18,44 @@ necessary help
 
 3. I want to see version of my command by executing
 internsctl --version
+---
+* <b>Solution:</b>
+
+<b>step-1:</b> #!/bin/bash
+
+function display_help() {
+    echo "Usage: internsctl [OPTIONS]"
+    echo "Custom Linux Command for Operations"
+    echo ""
+    echo "Options:"
+    echo "  --help"
+    echo "  --version"
+}
+
+function display_version() {
+    echo "internsctl v0.1.0"
+}
+
+case "$1" in
+    --help)
+        display_help
+        ;;
+    --version)
+        display_version
+        ;;
+    *)
+        echo "Invalid option. Use 'internsctl --help' for usage guidelines."
+        exit 1
+        ;;
+esac
+
+<b>step-2:</b> chmod +x internsctl.sh
+
+<b>step-3:</b> ./internsctl.sh --help
+
+<b>step-4:</b> ./internsctl.sh --version
+
+---
 
 # Section B
 I want to execute the following command for -
@@ -30,6 +70,55 @@ I want to get memory information of my server through the following command:
 $ internsctl memory getinfo
 Expected Output
 I want similar output as we get from free command
+
+---
+* <b>Solution:</b>
+
+<b>step-1:</b> Just add bash script in above program : 
+
+  function display_help() {
+    echo "  cpu getinfo"
+    echo "  memory getinfo "
+  }
+
+<b>step-2:</b> function get_cpu_info() {
+    lscpu
+}
+
+function get_memory_info() {
+    free
+}
+
+
+case "$1" in
+cpu)
+        if [ "$2" == "getinfo" ]; then
+            get_cpu_info
+        else
+            echo "Invalid subcommand for 'cpu'. Use 'internsctl cpu getinfo'."
+            exit 1
+        fi
+        ;;
+    memory)
+        if [ "$2" == "getinfo" ]; then
+            get_memory_info
+        else
+            echo "Invalid subcommand for 'memory'. Use 'internsctl memory getinfo'."
+            exit 1
+        fi
+        ;;
+    *)
+        echo "Invalid option. Use 'internsctl --help' for usage guidelines."
+        exit 1
+        ;;
+esac
+
+<b>step-3:</b> chmod +x internsctl.sh
+
+<b>step-4:</b> ./internsctl.sh cpu getinfo & 
+                ./internsctl.sh memory getinfo
+
+---
 
 * Part2 | Level Intermediate
 I want to create a new user on my server through the following command:
