@@ -132,6 +132,67 @@ $ internsctl user list
 If want to list all the users with sudo permissions on my server through the following command:
 $ internsctl user list --sudo-only
 
+---
+
+* <b>Solution:</b>
+
+<b>step-1:</b> 
+function display_help() {
+echo "  user create <username> Create a new user"
+    echo "  user list"
+    echo "  user list --sudo-only"
+}
+
+<b>step-2:</b> 
+function create_user() {
+    if [ -z "$2" ]; then
+        echo "Error: Missing username. Usage: internsctl user create <username>"
+        exit 1
+    fi
+sudo useradd -m "$2"
+echo "User '$2' created successfully."
+}
+
+function list_users() {
+    cut -d: -f1 /etc/passwd
+}
+
+
+function list_sudo_users() {
+    getent group sudo | cut -d: -f4 | tr ',' '\n'
+}
+
+<b>step-3:</b>  
+case "$1" in
+user)
+        if [ "$2" == "create" ]; then
+            create_user "$@"
+        elif [ "$2" == "list" ]; then
+            if [ "$3" == "--sudo-only" ]; then
+                list_sudo_users
+            else
+                list_users
+            fi
+        else
+            echo "Invalid subcommand for 'user'. Use 'internsctl user create <username>' or 'internsctl user list [--sudo-only]'."
+            exit 1
+        fi
+        ;;
+    *)
+        echo "Invalid option. Use 'internsctl --help' for usage guidelines."
+        exit 1
+        ;;
+esac
+
+<b>step-4:</b> chmod +x internsctl.sh
+
+<b>step-5:</b> 
+1. ./internsctl.sh user create testuser
+2. ./internsctl.sh user list
+3. ./internsctl.sh user list --sudo-only
+
+---
+
 * Part3 | Advanced Level
 By executing below command I want to get some information about a file
 $ internsctl file getinfo <file-name>
